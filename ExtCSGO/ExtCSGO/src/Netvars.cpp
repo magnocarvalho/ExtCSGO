@@ -8,10 +8,6 @@ namespace ExtCSGO::Netvars
 {
 	bool InitNetvars()
 	{
-		//FILE FilePtr;
-		//auto *File = &FilePtr;
-
-		//fopen_s(&File, "offsets.cfg", "r");
 		auto File = Tools::OpenFile("offsets.cfg");
 
 		if (File == nullptr)
