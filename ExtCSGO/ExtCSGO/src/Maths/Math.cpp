@@ -1,13 +1,13 @@
 #include "Maths\Math.h"
-
-
+#include "Maths\Vector.h"
 #include <math.h>
+
+#define DEG2RAD( x  )  ( (float)(x) * (float)(3.14159265358979323846f / 180.f) )
+#define RAD2DEG( x  )  ( (float)(x) * (float)(180.f / 3.14159265358979323846f) )
+
 namespace ExtCSGO::Maths
 {
-	#define DEG2RAD( x  )  ( (float)(x) * (float)(3.14159265358979323846f / 180.f) )
-	#define RAD2DEG( x  )  ( (float)(x) * (float)(180.f / 3.14159265358979323846f) )
-
-	void SinCos(float radians, float * sine, float * cosine)
+	static void SinCos(float radians, float * sine, float * cosine)
 	{
 		*sine = (float)sin(radians);
 		*cosine = (float)cos(radians);
@@ -62,7 +62,7 @@ namespace ExtCSGO::Maths
 		angles.z = 0.f;
 	}
 
-	void AngleVectors(const vec3 & angles, vec3 * forward)
+	static void AngleVectors(const vec3 & angles, vec3 * forward)
 	{
 		float sp, sy, cp, cy;
 
@@ -73,23 +73,6 @@ namespace ExtCSGO::Maths
 		forward->x = cp * cy;
 		forward->y = cp * sy;
 		forward->z = -sp;
-	}
-
-	float Distance2d(const vec3& v1, const vec3& v2)
-	{
-		return (float)sqrt(pow(v1.x - v2.x, 2.0f) + pow(v1.y - v2.y, 2) + pow(v1.z - v2.z, 2.0f));
-	}
-
-	float AngleDistance(
-		const vec3 & ViewAngles,
-		const vec3 & TargetAngles,
-		const vec3 & MyPos,
-		const vec3 & TargetPos)
-	{
-		float VecDist = Distance2d(MyPos, TargetPos);
-		float pitch = (float)sin(DEG2RAD(ViewAngles.x - TargetAngles.x)) * VecDist;
-		float yaw = (float)sin(DEG2RAD(ViewAngles.y - TargetAngles.y)) * VecDist;
-		return (float)sqrt(powf(pitch, 2.0) + powf(yaw, 2.0));
 	}
 
 	vec3 ConvertAngles(
@@ -104,11 +87,6 @@ namespace ExtCSGO::Maths
 		AnglePixels.y = ((AnglePixels.y / Sensitivity) / 0.022f);
 
 		return vec3(AnglePixels.y, AnglePixels.x, 0.f);
-	}
-
-	int PxAngleDistance(const vec3& PxAimAngle)
-	{
-		return (int)sqrt(pow(abs(PxAimAngle.x), 2.0) + pow(abs(PxAimAngle.y), 2.0));
 	}
 
 	float GetFov(const vec3& viewAngle, const vec3& aimAngle)

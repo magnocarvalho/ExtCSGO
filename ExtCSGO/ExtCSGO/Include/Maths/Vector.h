@@ -44,7 +44,4 @@ namespace ExtCSGO
 		float x, y, z;
 	};
 	typedef float matrix3x4_t[3][4];
-
-	void GetArrayData(const char* Array, const int & dwOffset, void* buffer);
-
 }

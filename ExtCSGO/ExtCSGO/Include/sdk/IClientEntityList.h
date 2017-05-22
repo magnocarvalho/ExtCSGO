@@ -1,14 +1,16 @@
 #pragma once
 #include <vector>
 #include "..\Maths\Vector.h"
+#include "Tools.h"
+
+#define MaxEntityIndex 32
 
 namespace ExtCSGO
 {
-	class Engine;
-	class vec3;
+	class Process;
+	class Module;
 }
 
-#define MaxEntityIndex 32
 namespace ExtCSGO::sdk
 {
 	class Player;
@@ -22,13 +24,16 @@ namespace ExtCSGO::sdk
 	{
 		Player*        m_Entity;
 		s_matrix3x4*   m_Matrix;
+		int            m_BoneId;
 	public:
 		IClientEntityList();
 		~IClientEntityList();
 
-		vec3 GetHeadBone(const int & Index) const;
-		Player* GetClientEntity(const int & Index) const;
+		vec3 GetBonePosition(const int & EntityIndex) const;
+		Player* GetClientEntity(const int & EntityIndex) const;
 
-		void Update(const Engine *engine) const;
+		void SetBoneId(const int & Id);
+		void Update(const Process *Process, const Module* ClientDLL) const;
 	};
+	void InitIClientEntityOffsets(FILE*& File);
 }

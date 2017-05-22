@@ -1,5 +1,5 @@
 #include "Engine\Memory.h"
-
+#include <iostream>
 namespace ExtCSGO
 {
 	static bool HandleIsValid(const HANDLE & ProcessHandle);
@@ -89,7 +89,6 @@ namespace ExtCSGO
 		{
 			return false;
 		}
-
 		DWORD ExitCode;
 		GetExitCodeProcess(ProcessHandle, &ExitCode);
 		return (ExitCode == STILL_ACTIVE);
@@ -106,7 +105,6 @@ namespace ExtCSGO
 		(
 			"Taskkill /IM" + std::string(" ") + ProcessName	+ " /F"
 		);
-
 		system(CmdString.c_str());
 		if (hProcess > nullptr)
 		{
@@ -125,7 +123,6 @@ namespace ExtCSGO
 		                                si.cb = sizeof(STARTUPINFO);
 		                                si.dwFlags = STARTF_USESHOWWINDOW;
 		                                si.wShowWindow = SW_HIDE;
-
 
 		std::string Path = ProcessPath;
 		Path.erase(Path.end() - 1);
@@ -151,14 +148,20 @@ namespace ExtCSGO
 
 	static bool DebugNewProcess(const char* WindowClassName, PHANDLE ProcessHandle)
 	{
-		DWORD ProcessId = FALSE;
-		GetWindowThreadProcessId(FindWindowA(WindowClassName, nullptr), &ProcessId);
-		if (ProcessId == FALSE)
+		if (!HandleIsValid(*ProcessHandle))
 		{
-			return false;
+			DWORD ProcessId = 0;
+			GetWindowThreadProcessId(FindWindowA(WindowClassName, nullptr), &ProcessId);
+			if (ProcessId == 0)
+			{
+				std::cout << "[Debug]On, start game before debugging!" << std::endl;
+				return false;
+			}
+			*ProcessHandle = OpenProcess(PROCESS_ALL_ACCESS, false, ProcessId);
 		}
-		*ProcessHandle = OpenProcess(PROCESS_ALL_ACCESS, false, ProcessId);
-		return (*ProcessHandle > nullptr);
+		auto & Handle = *ProcessHandle;
+
+		return (Handle > nullptr);
 	}
 }
 

@@ -1,14 +1,17 @@
 #include "sdk\IClientEntityList.h"
-#include "Netvars.h"
-#include "Engine.h"
+#include "sdk\Player.h"
+#include "Engine\Memory.h"
+
 
 namespace ExtCSGO::sdk
 {
+	static int m_EntityList = 0;
 
 	IClientEntityList::IClientEntityList() : 
 		m_Entity(new Player[MaxEntityIndex]),
 		m_Matrix(new s_matrix3x4[MaxEntityIndex])
 	{
+		m_BoneId = 8;
 	}
 
 	IClientEntityList::~IClientEntityList()
@@ -17,31 +20,36 @@ namespace ExtCSGO::sdk
 		delete m_Entity;
 	}
 
-	vec3 IClientEntityList::GetHeadBone(const int & Index) const
+	vec3 IClientEntityList::GetBonePosition(const int & EntityIndex) const
 	{
-		return vec3(m_Matrix[Index].Matrix[0][3], m_Matrix[Index].Matrix[1][3], m_Matrix[Index].Matrix[2][3]);
+		return vec3(m_Matrix[EntityIndex].Matrix[0][3], m_Matrix[EntityIndex].Matrix[1][3], m_Matrix[EntityIndex].Matrix[2][3]);
 	}
 
-	Player* IClientEntityList::GetClientEntity(const int & Index) const
+	Player* IClientEntityList::GetClientEntity(const int & EntityIndex) const
 	{
-		return &m_Entity[Index];
+		return &m_Entity[EntityIndex];
 	}
 
-	void IClientEntityList::Update(const Engine *engine) const
+	void IClientEntityList::SetBoneId(const int & Id)
+	{
+		m_BoneId = Id;
+	}
+
+	void IClientEntityList::Update(const Process *Process, const Module* ClientDLL) const
 	{
 		for (int i = 0; i < MaxEntityIndex; i++)
 		{
 			static DWORD Ptr = 0;
-			if (!engine->GetProcess()->ReadMemory
+			if (!Process->ReadMemory
 			(
-				(PVOID)((DWORD64)engine->GetClientDLL()->GetdwBaseAddress() + m_EntityList + i * 0x10),
+				(PVOID)((DWORD64)ClientDLL->GetdwBaseAddress() + m_EntityList + i * 0x10),
 				&Ptr, sizeof(DWORD)
 			))
 			{
 				continue;
 			}
 
-			if (!engine->GetProcess()->ReadMemory
+			if (!Process->ReadMemory
 			(
 				(PVOID)((DWORD64)Ptr),
 				&m_Entity[i], sizeof(Player)
@@ -50,14 +58,19 @@ namespace ExtCSGO::sdk
 				continue;
 			}
 
-			if (!engine->GetProcess()->ReadMemory
+			if (!Process->ReadMemory
 			(
-				(PVOID)((DWORD64)m_Entity[i].GetdwBoneMatrix() + 8 * 0x30),
+				(PVOID)((DWORD64)m_Entity[i].GetdwBoneMatrix() + m_BoneId * 0x30),
 				&m_Matrix[i], sizeof(s_matrix3x4)
 			))
 			{
 				continue;
 			}
 		}
-	}	
+	}
+
+	void InitIClientEntityOffsets(FILE*& File)
+	{
+		m_EntityList = std::stoi(Tools::ReadString(File, "EntityList="), NULL, NULL);
+	}
 }

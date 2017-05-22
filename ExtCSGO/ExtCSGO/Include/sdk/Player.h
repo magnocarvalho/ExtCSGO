@@ -1,11 +1,17 @@
 #pragma once
-#include "Maths\Vector.h"
-#include "..\Netvars.h"
+#include <iostream>
+#include "Tools.h"
+
+namespace ExtCSGO
+{
+	class vec3;
+}
+
 namespace ExtCSGO::sdk
 {	
 	class Player
 	{
-		char	 m_Player[m_CrosshairId + 0x4];
+		char	 m_Player[0x10000];
 	public:
 		int 	 GetHealth() const;
 		int 	 GetTeamNum() const;
@@ -22,4 +28,5 @@ namespace ExtCSGO::sdk
 		bool 	 IsDormant() const;
 		bool 	 IsValid() const;
 	};
+	void InitPlayerOffsets(FILE*& File);
 }

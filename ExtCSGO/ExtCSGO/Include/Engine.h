@@ -1,35 +1,15 @@
 #pragma once
-#include "Settings.h"
+#include <windows.h>
+#include "sdk\sdk.h"
 
-#include "Engine\Memory.h"
-#include "sdk\Player.h"
-#include "sdk\IVEngineClient.h"
-#include "sdk\IClientEntityList.h"
-
-namespace ExtCSGO
+namespace ExtCSGO::Engine
 {
-	class Engine
-	{
-		Process*                    m_Process;
-		Module*                     m_ClientDLL;
-		Module*                     m_EngineDLL;
-		sdk::IClientEntityList*     m_IClientEntity;
-		sdk::IVEngineClient*        m_IVEngineClient;
-	public:
-		Engine(const Settings* settings);
-		~Engine();
-		Process*                    GetProcess() const;
-		Module*                     GetClientDLL() const;
-		Module*                     GetEngineDLL() const;
+	void                                 StartEngine(const std::string & GamePath, const std::string & LaunchOptions);
+	void                                 ShutdownEngine();
+	void                                 UpdateEngine();
+	void                                 UpdateEvents();
+	bool                                 IsValid();
 
-		sdk::IClientEntityList*     GetIClientEnt() const;
-		sdk::IVEngineClient*        GetIVEngine() const;
-		void                        Update() const;
-		void                        UpdateEvents();
-		bool                        IsValid() const;
-
-	private:
-		bool                        IsHandleValid() const;
-		bool                        IsModuleValid() const;
-	};
+	sdk::IClientEntityList*              GetIClientEnt();
+	sdk::IVEngineClient*                 GetIVEngine();
 }

@@ -151,8 +151,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\Settings.cpp" />
+    <ClCompile Include="src\Netvars.cpp" />
     <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\ExtCSGO.cpp" />
+    <ClCompile Include="src\Tools.cpp" />
     <ClCompile Include="src\Engine\Module.cpp" />
     <ClCompile Include="src\Engine\Process.cpp" />
     <ClCompile Include="src\Features\Aimbot.cpp" />
@@ -162,11 +164,12 @@
     <ClCompile Include="src\sdk\IClientEntityList.cpp" />
     <ClCompile Include="src\sdk\IVEngineClient.cpp" />
     <ClCompile Include="src\sdk\Player.cpp" />
-    <ClCompile Include="src\Update.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Settings.h" />
     <ClInclude Include="Include\Engine.h" />
+    <ClInclude Include="Include\ExtCSGO.h" />
+    <ClInclude Include="Include\sdk\sdk.h" />
+    <ClInclude Include="Include\Tools.h" />
     <ClInclude Include="Include\Engine\Memory.h" />
     <ClInclude Include="Include\Features\Features.h" />
     <ClInclude Include="Include\Maths\Math.h" />
@@ -175,10 +178,10 @@
     <ClInclude Include="Include\sdk\IClientEntityList.h" />
     <ClInclude Include="Include\sdk\IVEngineClient.h" />
     <ClInclude Include="Include\sdk\Player.h" />
-    <ClInclude Include="Include\Update.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.cfg" />
+    <None Include="offsets.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

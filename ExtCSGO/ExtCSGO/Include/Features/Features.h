@@ -1,9 +1,25 @@
 #pragma once
-#include "..\Engine.h"
-#include "..\Settings.h"
+
+namespace ExtCSGO::sdk
+{
+	class IClientEntityList;
+	class IVEngineClient;
+	class Player;
+}
 
 namespace ExtCSGO::Features
 {
-	void Aimbot(const Engine* engine, const Settings* settings);
-	void Triggerbot(const Engine* engine, const Settings* settings);
+	void Aimbot (
+		const sdk::IClientEntityList* IClientEntity,
+		const sdk::IVEngineClient*    IVEngine,
+		const int&                    AimKey,
+		const float&                  AimFov,
+		const int&                    AimSmooth,
+		const float&                  Sensitivity);
+
+	void Triggerbot (
+		const sdk::IClientEntityList* IClientEntity,
+		const sdk::IVEngineClient*    IVEngine,
+		const int&                    TriggerKey,
+		const int&                    TriggerBurst);
 }

@@ -1,9 +1,11 @@
 #include "Features\Features.h"
+#include <windows.h>
+
+#include "sdk\sdk.h"
 
 namespace ExtCSGO::Features
 {
 	using namespace sdk;
-
 
 	enum ButtonState : bool
 	{
@@ -11,43 +13,51 @@ namespace ExtCSGO::Features
 		Button_Release = false
 	};
 
-	static bool GetTarget(const Engine* engine);
+	static bool GetTarget (
+		const IClientEntityList* IClientEntity,
+		const IVEngineClient*    IVEngine );
+
 	static void ClickLeftButton(const bool & Flags, const int & ClickBurst);
 
-	void Triggerbot(const Engine* engine, const Settings* settings)
+	void Triggerbot (
+		const IClientEntityList* IClientEntity,
+		const IVEngineClient*    IVEngine,
+		const int&               TriggerKey,
+		const int&               TriggerBurst)
 	{
-		if (GetAsyncKeyState(settings->m_TriggerKey))
+		if (GetAsyncKeyState(TriggerKey))
 		{
-			if (GetTarget(engine))
+			if (GetTarget(IClientEntity, IVEngine))
 			{
-				ClickLeftButton(Button_Press, settings->m_TriggerBurst);
+				ClickLeftButton(Button_Press, TriggerBurst);
 			}
 
 			else
 			{
-				ClickLeftButton(Button_Release, settings->m_TriggerBurst);
+				ClickLeftButton(Button_Release, TriggerBurst);
 			}
 		}
 		else
 		{
-			ClickLeftButton(Button_Release, settings->m_TriggerBurst);
+			ClickLeftButton(Button_Release, TriggerBurst);
 		}
 	}
 
-	static bool GetTarget(const Engine* engine)
+	static bool GetTarget (
+		const IClientEntityList* IClientEntity,
+		const IVEngineClient*    IVEngine )
 	{
-		auto LocalPlayer = engine->GetIClientEnt()->GetClientEntity(engine->GetIVEngine()->GetLocalPlayer());
+		auto LocalPlayer = IClientEntity->GetClientEntity(IVEngine->GetLocalPlayer());
 
 		int EntityIndex = (LocalPlayer->GetCrosshairId() - 1);
 
 		if (EntityIndex > MaxEntityIndex || EntityIndex < 0)
 			return false;
 
-		auto TargetPlayer = engine->GetIClientEnt()->GetClientEntity(EntityIndex);
+		auto TargetPlayer = IClientEntity->GetClientEntity(EntityIndex);
 
 		return (TargetPlayer->GetTeamNum() != LocalPlayer->GetTeamNum() && TargetPlayer->GetHealth() > 0);
 	}
-
 
 	static void ClickLeftButton(const bool & Flags, const int & ClickBurst)
 	{
@@ -63,7 +73,6 @@ namespace ExtCSGO::Features
 				}
 				break;
 			}
-
 			case Button_Release:
 			{
 				if (Click == true)
@@ -82,7 +91,6 @@ namespace ExtCSGO::Features
 					{
 						Release = true;
 					}
-
 					if (Release == true)
 					{
 						mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);

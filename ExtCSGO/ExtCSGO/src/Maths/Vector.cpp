@@ -153,9 +153,4 @@ namespace ExtCSGO
 	{
 		return os << "vec3(" << dt.x << ", " << dt.y << ", " << dt.z << ")";
 	}
-
-	void GetArrayData(const char* Array, const int & dwOffset, void* buffer)
-	{
-		*(void**)buffer = *(void**)( Array + dwOffset );
-	}
 }

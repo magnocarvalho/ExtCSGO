@@ -1,6 +1,9 @@
-#include <Update.h>
+#include <ExtCSGO.h>
+#include <windows.h>
 
 int main()
 {
-	return ExtCSGO::Update().Run();
+	ExtCSGO::Start();
+	ExtCSGO::Shutdown();
+	return 0;
 }

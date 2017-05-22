@@ -71,12 +71,10 @@ namespace ExtCSGO
 			}
 
 		}
-
 		if (*hModule == nullptr)
 		{
 			return false;
 		}
-
 		return true;
 	}
 	

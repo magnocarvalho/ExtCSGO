@@ -39,19 +39,22 @@
     <ClCompile Include="src\sdk\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Engine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Update.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Features\Aimbot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Features\Triggerbot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Settings.cpp">
+    <ClCompile Include="src\Netvars.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ExtCSGO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,13 +74,7 @@
     <ClInclude Include="Include\sdk\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Netvars.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Update.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Features\Features.h">
@@ -86,11 +83,21 @@
     <ClInclude Include="Include\Engine\Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Settings.h">
+    <ClInclude Include="Include\sdk\sdk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ExtCSGO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="config.cfg" />
+    <None Include="offsets.cfg" />
   </ItemGroup>
 </Project>

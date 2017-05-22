@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <string>
+
 namespace ExtCSGO
 {
 	enum PROCESS_FLAGS_CREATE

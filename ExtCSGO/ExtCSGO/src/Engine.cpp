@@ -1,32 +1,41 @@
 #include "Engine.h"
-#include "Settings.h"
+#include "Engine\Memory.h"
 
 #define LIST_MODULES_32BIT 0x1
 #define LIST_MODULES_64BIT 0x2
 #define LIST_MODULES_ALL 0x3
-
-namespace ExtCSGO
+namespace ExtCSGO::Engine
 {
 	using namespace sdk;
-	Engine::Engine(const Settings* settings) :
-		m_Process
-		(
-			new Process
-			(
-				settings->m_GamePath.c_str(),
-				"csgo.exe",
-				"Valve001",
-				settings->m_LaunchOptions.c_str()
-			)
-		),
-		m_ClientDLL(new Module("client.dll", LIST_MODULES_32BIT)),
-		m_EngineDLL(new Module("engine.dll", LIST_MODULES_32BIT)),
-		m_IVEngineClient(new IVEngineClient()),
-		m_IClientEntity(new IClientEntityList())
+	static Process*             m_Process;
+	static Module*              m_ClientDLL;
+	static Module*              m_EngineDLL;
+	static IVEngineClient*      m_IVEngineClient;
+	static IClientEntityList*   m_IClientEntity;
+
+	static bool IsHandleValid();
+	static bool IsModuleValid();
+
+	void StartEngine(const std::string & GamePath, const std::string & LaunchOptions)
 	{
+		m_Process = new Process
+		(
+			GamePath.c_str(),
+			"csgo.exe",
+			"Valve001",
+			LaunchOptions.c_str()
+		);
+
+		m_ClientDLL = new Module("client.dll", LIST_MODULES_32BIT);
+
+		m_EngineDLL = new Module("engine.dll", LIST_MODULES_32BIT);
+
+		m_IVEngineClient = new IVEngineClient();
+
+		m_IClientEntity = new IClientEntityList();
 	}
 
-	Engine::~Engine()
+	void ShutdownEngine()
 	{
 		delete m_IClientEntity;
 		delete m_IVEngineClient;
@@ -35,71 +44,68 @@ namespace ExtCSGO
 		delete m_Process;
 	}
 
-	Process * Engine::GetProcess() const
-	{
-		return m_Process;
-	}
-
-	Module * Engine::GetClientDLL() const
-	{
-		return m_ClientDLL;
-	}
-
-	Module * Engine::GetEngineDLL() const
-	{
-		return m_EngineDLL;
-	}
-
-	IClientEntityList *Engine::GetIClientEnt() const
+	IClientEntityList* GetIClientEnt()
 	{
 		return m_IClientEntity;
 	}
 
-	IVEngineClient *Engine::GetIVEngine() const
+	IVEngineClient* GetIVEngine()
 	{
 		return m_IVEngineClient;
 	}
 
-	void Engine::Update() const
+	void UpdateEngine()
 	{
 		if (!IsHandleValid())
 		{
-			GetClientDLL()->Reset();
-			GetEngineDLL()->Reset();
-
-			GetProcess()->Init();
+			m_ClientDLL->Reset();
+			m_EngineDLL->Reset();
+			m_Process->Init();
 		}
 		else
 		{
-			GetClientDLL()->Init(GetProcess()->GetHandle());
-			GetEngineDLL()->Init(GetProcess()->GetHandle());
+			m_ClientDLL->Init(m_Process->GetHandle());
+			m_EngineDLL->Init(m_Process->GetHandle());
 
-			if (IsValid())
+			if (IsModuleValid())
 			{
 				std::cout << "Process Found! Handle:" << m_Process->GetHandle() << std::endl;
 			}
 		}
+		
 	}
 
-	void Engine::UpdateEvents()
+	void UpdateEvents()
 	{
-		m_IClientEntity->Update(this);
-		m_IVEngineClient->Update(this);
+		m_IClientEntity->Update(m_Process, m_ClientDLL);
+		m_IVEngineClient->Update(m_Process, m_EngineDLL);
 	}
 
-	bool Engine::IsValid() const
+	bool IsValid()
 	{
-		return (IsHandleValid() && IsModuleValid());
+		if (!IsHandleValid())
+			return false;
+
+		if (!IsModuleValid())
+			return false;
+
+		return true;
 	}
 
-	bool Engine::IsHandleValid() const
+	static bool IsHandleValid()
 	{
-		return GetProcess()->IsValid(PROCESS_HANDLE);
+		return m_Process->IsValid(PROCESS_HANDLE);
 	}
 
-	bool Engine::IsModuleValid() const
+	static bool IsModuleValid()
 	{
-		return GetClientDLL()->IsValid() &&
-			   GetEngineDLL()->IsValid();
+		if (!m_ClientDLL->IsValid())
+			return false;
+
+		if (!m_EngineDLL->IsValid())
+			return false;
+
+		return true;
 	}
 }
+
