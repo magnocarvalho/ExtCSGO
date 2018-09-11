@@ -1,3 +1,5 @@
+
+Fork for Ext, to education.
 # ExtCSGO
 Example EAC ring3 bypass Project
 Aimbot with Fov/Smooth/AimKey
